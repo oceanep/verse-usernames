@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { media } from '@bitcoin-portal/verse-web-components/dist/themes/breakpoints';
-import { Verse } from './utils/media';
+import { Verse } from '../../utils/media';
 import { colors } from '@bitcoin-portal/verse-web-components/dist/themes/colors';
 
 

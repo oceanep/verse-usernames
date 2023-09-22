@@ -5,6 +5,7 @@ import {
     NavSection,
     VerseLogoWrapper,
 } from './styled';
+import ConnectButton from '../ConnectButton';
 
 const Nav: FunctionComponent = () => {
 
@@ -16,6 +17,7 @@ const Nav: FunctionComponent = () => {
                 width={140}
                 height="auto"
             />
+            <ConnectButton/>
         </NavSection>
     );
 };

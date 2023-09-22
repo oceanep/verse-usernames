@@ -1,20 +1,13 @@
 import React from 'react';
-import WcModal from './components/WcModal';
+import WalletConnect from './components/WalletConnect';
 
-import { 
-  Container,
-  StyledContentBlock
-} from './styled'
-import Nav from './components/Nav/Nav';
+import Layout from './components/Layout/Layout';
 
 function App() {
   return (
-    <Container>
-      <Nav/>
-      <StyledContentBlock>
-        <WcModal/>
-      </StyledContentBlock>
-    </Container>
+    <WalletConnect>
+      <Layout/>
+    </WalletConnect>
   );
 }
 
