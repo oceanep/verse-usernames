@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@bitcoin-portal/verse-web-components": "^1.2.35",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -51,7 +50,8 @@
     ]
   },
   "devDependencies": {
+    "@bitcoin-portal/verse-web-components": "^1.2.35",
     "@types/styled-components": "^5.1.0",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.3.6"
   }
 }
