@@ -1,7 +1,5 @@
 import React, { useMemo, useState } from 'react';
 
-import Button from '@bitcoin-portal/verse-web-components/dist/Button';
-
 import Nav from '../Nav/Nav';
 import Header from '../Header/Header';
 

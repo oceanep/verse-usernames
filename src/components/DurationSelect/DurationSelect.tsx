@@ -1,7 +1,7 @@
 import React, { Dispatch, FC, SetStateAction, useCallback, useMemo, useState } from 'react';
 
-import SlidingTabs from '@bitcoin-portal/verse-web-components/dist/SlidingTabs';
-import Title from '@bitcoin-portal/verse-web-components/dist/Title';
+import SlidingTabs from '../SlidingTabs';
+import Title from '../Title';
 
 import {
     TabContainer

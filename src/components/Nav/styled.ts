@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { colors } from '@bitcoin-portal/verse-web-components/dist/themes/colors';
+import { colors } from '../../utils/colors';
 
 export const NavSection = styled.div`
   grid-area: header;

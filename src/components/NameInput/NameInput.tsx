@@ -1,7 +1,7 @@
 import React, { Dispatch, FC, SetStateAction, useMemo } from 'react';
 
-import InputAction from '@bitcoin-portal/verse-web-components/dist/InputAction';
-import Button from '@bitcoin-portal/verse-web-components/dist/Button';
+import InputAction from '../InputAction';
+import Button from '../Button';
 
 import {
     InputContainer
