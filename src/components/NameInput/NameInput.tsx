@@ -11,24 +11,29 @@ interface NameInputProps {
     input: string;
     setInput: Dispatch<SetStateAction<string>>;
     valid: boolean;
-    available?: boolean;
+    checkAvailability: (username:string) => void;
+    available?: boolean | null;
 }
 
 const NameInput:FC<NameInputProps> = ({
     input,
     setInput,
     valid,
-    available = true
+    checkAvailability,
+    available
 }) => {
 
     const errorType = useMemo(() => {
         if (!valid) return 'Invalid username format';
-        if (!available) return 'Username not available';
+        if (available === false) return 'Username not available';
         return undefined;
     }, [valid, available]);
 
+    //If available give some UI feedback
     return (
-        <InputContainer>
+        <InputContainer
+            available={available || false}
+        >
             <InputAction
                 placeholder='username@verse'
                 value={input || ''}
@@ -37,6 +42,7 @@ const NameInput:FC<NameInputProps> = ({
                 action={
                     <Button
                         disabled={!valid}
+                        onClick={() => checkAvailability(input)}
                     >
                         Check
                     </Button>

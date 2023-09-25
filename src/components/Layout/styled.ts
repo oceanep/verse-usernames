@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { media } from '../../utils/breakpoints';
-import { Verse, tabletBreakpoints } from '../../utils/media';
+import { Verse, tabletBreakpoints, media as screenMedia } from '../../utils/media';
 import { colors } from '../../utils/colors';
 
 
@@ -50,7 +50,7 @@ export const StyledContentBlock = styled.div`
         `}
 
         @media(min-width: ${tabletBreakpoints.xlarge}) {
-            max-width: ${tabletBreakpoints.small};
+            max-width: ${screenMedia.medium};
             border-color: ${theme.palette.border.default};
             border: 1px solid ${colors.shade50};
             /* CardShadow */

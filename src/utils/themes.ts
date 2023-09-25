@@ -81,6 +81,7 @@ export interface Theme {
     border: typeof border;
     spacing: typeof spacing;
     shadows: typeof shadows;
+    important: string;
   }
 
   const themes = {

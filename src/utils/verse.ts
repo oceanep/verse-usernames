@@ -83,6 +83,7 @@ const verse: Theme = {
   border,
   spacing,
   shadows,
+  important: '!important',
 };
 
 export default verse;
