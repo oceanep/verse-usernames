@@ -8,7 +8,6 @@ export const usernameAvailable = async (chain:string, username:string) => {
       return response;
     } catch(e) {
         console.log('There was an error: ', e);
-        return undefined;
     }
 };
 
@@ -18,7 +17,6 @@ export const getUsername = async (chain:string, address:string) => {
       return response;
     } catch(e) {
         console.log('There was an error: ', e);
-        return undefined;
     }
 };
 
@@ -28,6 +26,5 @@ export const uploadMetadata = async (chain:string, username:string, address:stri
         return response;
     } catch(e) {
         console.log('There was an error: ', e);
-        return undefined;
     }
 };
