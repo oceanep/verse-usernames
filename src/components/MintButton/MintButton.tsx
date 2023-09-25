@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import Button from '@bitcoin-portal/verse-web-components/dist/Button';
+import Button from '../Button';
 
 import {
     ButtonContainer

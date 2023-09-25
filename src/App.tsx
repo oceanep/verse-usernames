@@ -5,7 +5,7 @@ import {
   ThemeProvider,
 } from 'styled-components';
 
-import themes from '@bitcoin-portal/verse-web-components/dist/themes';
+import themes from './utils/themes';
 
 import WalletConnect from './components/WalletConnect';
 import Layout from './components/Layout/Layout';

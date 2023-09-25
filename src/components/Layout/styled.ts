@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { media } from '@bitcoin-portal/verse-web-components/dist/themes/breakpoints';
+import { media } from '../../utils/breakpoints';
 import { Verse } from '../../utils/media';
-import { colors } from '@bitcoin-portal/verse-web-components/dist/themes/colors';
+import { colors } from '../../utils/colors';
 
 
 export const Container = styled.div`
