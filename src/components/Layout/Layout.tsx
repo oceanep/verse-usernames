@@ -112,7 +112,7 @@ const Layout = () => {
                 <MintButton
                     label="Mint Username!"
                     createMetadata={createMetadata}
-                    //disabled={availability !== true || !writeAsync}
+                    disabled={availability !== true}
                 />
             </StyledContentBlock>
         </Container>
