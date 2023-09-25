@@ -60,6 +60,18 @@ const Layout = () => {
         };
     }, [chainId]);
 
+    const createMetadata = useCallback(async () => {
+        try {
+            if (!availability || !usernameInput || !address) return;
+            const res = await uploadMetadata(chainId, usernameInput, address);
+
+            if (res?.data.length) setipfsHash( res.data);
+        } catch(e) {
+            console.log('error in layout: ', e)
+        }
+    }, [chainId, usernameInput, address, availability]);
+
+
     return (
         <Container>
             <Nav/>
@@ -78,7 +90,11 @@ const Layout = () => {
                     selected={duration}
                     setSelected={setDuration}
                 />
-                <MintButton label="Mint!"/>
+                <MintButton
+                    label="Mint!"
+                    createMetadata={createMetadata}
+                    disabled={availability !== true}
+                />
             </StyledContentBlock>
         </Container>
     );
