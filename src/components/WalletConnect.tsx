@@ -8,7 +8,7 @@ const WalletConnect: FC<PropsWithChildren> = ({
     children
 }) => {
     const chains = [polygon, polygonMumbai];
-    const projectId = '3d896847823ac0e3b56b32bea73e10ac';
+    const projectId = 'a2bf8754198a7f3b4db2786879164548';
 
     const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
     const wagmiConfig = createConfig({
