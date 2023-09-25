@@ -14,15 +14,17 @@ interface MintButtonProps {
 
 const MintButton:FC<MintButtonProps> = ({
     label,
+    createMetadata,
     disabled = false
 }) => {
     return (
         <ButtonContainer>
             <Button
                 fullWidth
-                design='secondary'
+                design='primary'
+                onClick={() => createMetadata()}
                 disabled={disabled}
-            >
+            >   
                 {label}
             </Button>
         </ButtonContainer>        

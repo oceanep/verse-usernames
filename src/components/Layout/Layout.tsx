@@ -69,10 +69,13 @@ const Layout = () => {
 
     const createMetadata = useCallback(async () => {
         try {
+            console.log("hello");
             if (!availability || !usernameInput || !address) return;
             const res = await uploadMetadata(chainId, usernameInput, address);
-
-            if (res?.data.length) setipfsHash( res.data);
+            console.log(res?.data);
+            if (!res?.data.length) return;
+            setipfsHash( res.data);
+            mint();
         } catch(e) {
             console.log('error in layout: ', e)
         }
@@ -107,7 +110,7 @@ const Layout = () => {
                     setSelected={setDuration}
                 />
                 <MintButton
-                    label="Mint!"
+                    label="Mint Username!"
                     createMetadata={createMetadata}
                     disabled={availability !== true || !writeAsync}
                 />
