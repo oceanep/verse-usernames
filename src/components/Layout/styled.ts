@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { media } from '../../utils/breakpoints';
-import { Verse } from '../../utils/media';
+import { Verse, tabletBreakpoints } from '../../utils/media';
 import { colors } from '../../utils/colors';
 
 
@@ -29,16 +29,32 @@ export const Container = styled.div`
 `;
 
 export const StyledContentBlock = styled.div`
-    width: 100%;
-    border-style: solid;
-    box-sizing: border-box;
-    position: relative;
-    overflow: hidden;
-    padding: 40px;
-    max-width: 600px;
+    ${({ theme }) => css`
+        width: 100%;
+        border-color: ${theme.palette.border.default};
+        box-sizing: border-box;
+        position: relative;
 
-    box-shadow: ${Verse.glowLight};
-    background-color: ${Verse.bgDark};
-    border-color: ${Verse.border};
-    border-radius: 40px;
+        min-height: calc(100vh - 160px);
+        border-bottom: 0px;
+        border-right: 0px;
+        border-left: 0px;
+        border-radius: 0px;
+
+        ${media.sm`
+            min-height: unset;
+            margin-bottom: 50px;
+            border-width: 2px;
+            border-radius: 24px;
+            padding: 40px;
+        `}
+
+        @media(min-width: ${tabletBreakpoints.xlarge}) {
+            max-width: ${tabletBreakpoints.small};
+            border-color: ${theme.palette.border.default};
+            border: 1px solid ${colors.shade50};
+            /* CardShadow */
+            box-shadow: ${Verse.glowLight};
+        }
+    `}
 `;
