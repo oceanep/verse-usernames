@@ -1,0 +1,11 @@
+import { parseEther } from "viem";
+
+import { default as ABI } from '../contracts/abi_VerseUsernameAR.json';
+
+export const verseUsernameARConfig = (username:string, userAddress:string, getIPFSHash:string) => ({
+    address: '0x00B1cbd1D9195EC7b4dd46BA0F942Db2f43917E1',
+    abi: ABI,
+    functionName: 'register',
+    args: [username, userAddress, getIPFSHash],
+    value: parseEther('0.001')
+});
