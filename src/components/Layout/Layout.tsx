@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useAccount } from 'wagmi';
+import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { polygon, polygonMumbai } from 'wagmi/chains'
 
 import Nav from '../Nav/Nav';
@@ -15,6 +15,7 @@ import DurationSelect from '../DurationSelect/DurationSelect';
 import MintButton from '../MintButton/MintButton';
 import { validateUsername } from '../../utils/utils';
 import { getUsername, uploadMetadata, usernameAvailable } from '../../api/verseResolver';
+import { verseUsernameARConfig } from '../../api/contract';
 
 const Layout = () => {
     const [usernameInput, setUsernameInput] = useState<string>('');
@@ -26,6 +27,12 @@ const Layout = () => {
     const { address } = useAccount();
 
     const chainId = polygon.id.toString();
+
+    const preConfig = useMemo(() => verseUsernameARConfig(usernameInput, address || '', ipfsHash), [usernameInput, address, ipfsHash]);
+
+    console.log('preConfig: ', preConfig)
+    const { config } = usePrepareContractWrite(preConfig);
+    const { error: wcError, status, writeAsync } = useContractWrite(config);
 
     const validName = useMemo(() => usernameInput.length ? validateUsername(usernameInput) : true, [usernameInput]);
 
@@ -71,6 +78,15 @@ const Layout = () => {
         }
     }, [chainId, usernameInput, address, availability]);
 
+    const mint = useCallback(async () => {
+        if (!usernameInput || !address || !ipfsHash || availability !== true) return;
+        if (wcError || !writeAsync ) return;
+        const txHash = await writeAsync?.();
+
+    }, [usernameInput, address, ipfsHash, availability, writeAsync, wcError]);
+
+    //useEffect to track status of tx
+
 
     return (
         <Container>
@@ -93,7 +109,7 @@ const Layout = () => {
                 <MintButton
                     label="Mint!"
                     createMetadata={createMetadata}
-                    disabled={availability !== true}
+                    disabled={availability !== true || !writeAsync}
                 />
             </StyledContentBlock>
         </Container>
