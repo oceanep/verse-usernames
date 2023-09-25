@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction } from 'react';
+import React, { Dispatch, FC, SetStateAction, useMemo } from 'react';
 
 import InputAction from '@bitcoin-portal/verse-web-components/dist/InputAction';
 import Button from '@bitcoin-portal/verse-web-components/dist/Button';
@@ -8,16 +8,24 @@ import {
 } from './styled'
 
 interface NameInputProps {
-    input?: string;
+    input: string;
     setInput: Dispatch<SetStateAction<string>>;
+    valid: boolean;
     available?: boolean;
 }
 
 const NameInput:FC<NameInputProps> = ({
     input,
     setInput,
+    valid,
     available = true
 }) => {
+
+    const errorType = useMemo(() => {
+        if (!valid) return 'Invalid username format';
+        if (!available) return 'Username not available';
+        return undefined;
+    }, [valid, available]);
 
     return (
         <InputContainer>
@@ -25,8 +33,14 @@ const NameInput:FC<NameInputProps> = ({
                 placeholder='username@verse'
                 value={input || ''}
                 onChange={(e) => setInput(e.target.value)}
-                error={!available ? 'Username not available' : undefined}
-                action={<Button>Check</Button>}
+                error={errorType}
+                action={
+                    <Button
+                        disabled={!valid}
+                    >
+                        Check
+                    </Button>
+                }
             />
         </InputContainer>
     )

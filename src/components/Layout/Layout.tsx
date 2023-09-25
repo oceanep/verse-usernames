@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import Button from '@bitcoin-portal/verse-web-components/dist/Button';
 
@@ -12,11 +12,14 @@ import {
 import NameInput from '../NameInput/NameInput';
 import DurationSelect from '../DurationSelect/DurationSelect';
 import MintButton from '../MintButton/MintButton';
+import { validateUsername } from '../../utils/utils';
 
 const Layout = () => {
     const [username, setUsername] = useState<string>('');
     const [available, setAvailable] = useState<boolean>(true);
     const [duration, setDuration] = useState<number>(0);
+
+    const validName = useMemo(() => username.length ? validateUsername(username) : true, [username])
 
     return (
         <Container>
@@ -27,6 +30,7 @@ const Layout = () => {
                     input={username}
                     setInput={setUsername}
                     available={available}
+                    valid={validName}
                 />
                 <DurationSelect
                     selected={duration}
