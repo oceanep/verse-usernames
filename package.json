@@ -52,6 +52,7 @@
   "devDependencies": {
     "@bitcoin-portal/verse-web-components": "^1.2.35",
     "@types/styled-components": "^5.1.0",
+    "axios": "^1.5.0",
     "styled-components": "^5.3.6"
   }
 }
