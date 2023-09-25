@@ -8,6 +8,7 @@ import {
 
 interface MintButtonProps {
     label: string;
+    createMetadata: () => void;
     disabled?: boolean;
 }
 
@@ -17,7 +18,13 @@ const MintButton:FC<MintButtonProps> = ({
 }) => {
     return (
         <ButtonContainer>
-            <Button fullWidth disabled={disabled}>{label}</Button>
+            <Button
+                fullWidth
+                design='secondary'
+                disabled={disabled}
+            >
+                {label}
+            </Button>
         </ButtonContainer>        
     );
 }
