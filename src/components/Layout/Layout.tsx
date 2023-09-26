@@ -6,9 +6,13 @@ import { polygon } from 'wagmi/chains'
 import Nav from '../Nav/Nav';
 import Header from '../Header/Header';
 
+import { default as ABI } from '../../contracts/abi_VerseUsernameAR.json';
+
+
 import { 
   Container,
-  StyledContentBlock
+  StyledContentBlock,
+  ButtonContainer,
 } from './styled'
 import NameInput from '../NameInput/NameInput';
 import DurationSelect from '../DurationSelect/DurationSelect';
@@ -16,22 +20,31 @@ import MintButton from '../MintButton/MintButton';
 import { validateUsername } from '../../utils/utils';
 import { getVerseUsername, uploadMetadata, usernameAvailable } from '../../api/verseResolver';
 import { verseUsernameARConfig } from '../../api/contract';
+import { parseEther } from 'viem';
+import Button from '../Button/Button';
 
 const Layout = () => {
     const [usernameInput, setUsernameInput] = useState<string>('');
     const [verseUsername, setVerseUsername] = useState<string>('');
     const [ipfsHash, setipfsHash] = useState<string>('');
     const [txHash, setTxHash] = useState<string>('');
+    const [successView, setSuccessView] = useState<boolean>(false);
     const [availability, setAvailability] = useState<boolean | null>(null);
     const [duration, setDuration] = useState<number>(0);
 
-    const { address } = useAccount();
+    const { address, isConnecting, isDisconnected } = useAccount();
 
     const chainId = polygon.id.toString();
 
     const preConfig = useMemo(() => verseUsernameARConfig(usernameInput, address || '', ipfsHash), [usernameInput, address, ipfsHash]);
 
-    const { config, refetch: refetchPrep } = usePrepareContractWrite({...preConfig});
+    const { config, refetch: refetchPrep } = usePrepareContractWrite({
+        address: '0x00B1cbd1D9195EC7b4dd46BA0F942Db2f43917E1' as `0x${string}`,
+        abi: ABI,
+        functionName: 'register',
+        args: [usernameInput, address, ipfsHash],
+        value: parseEther('0.001')
+    });
     const { error: wcError, status, writeAsync } = useContractWrite(config);
 
     const validName = useMemo(() => usernameInput.length ? validateUsername(usernameInput) : true, [usernameInput]);
@@ -49,11 +62,15 @@ const Layout = () => {
         };
 
         if (address && chainId) checkForUsername();
-    }, [address, chainId]);
+    }, [address, chainId, txHash]);
 
     useEffect(() => {
         setAvailability(null);
     }, [usernameInput]);
+
+    useEffect(() => {
+        if (!isConnecting && isDisconnected) setVerseUsername('');
+    }, [isConnecting, isDisconnected]);
 
     const checkAvailability = useCallback(async (username:string) => {
         try {
@@ -75,7 +92,6 @@ const Layout = () => {
             if (res?.data.length) {
                 setipfsHash(res.data);
                 console.log('ipfs hash: ', res.data)
-                return res.data;
             }
         } catch(e) {
             console.log('error in layout: ', e)
@@ -83,9 +99,12 @@ const Layout = () => {
     }, [chainId, usernameInput, address, availability]);
 
     const mint = useCallback(async () => {
+        console.log('initiating mint...')
+        console.log('checking values: ', usernameInput, address, ipfsHash, availability)
         if (!usernameInput || !address || !ipfsHash || availability !== true) return;
         if (wcError || !writeAsync ) return;
         try {
+            console.log('minting...');
             const res = await writeAsync?.();
             setTxHash(res?.hash || '');
         } catch(e) {
@@ -94,38 +113,69 @@ const Layout = () => {
         }
     }, [usernameInput, address, ipfsHash, availability, writeAsync, refetchPrep, wcError]);
 
+    useEffect(() => {
+        if (ipfsHash.length) mint();
+    }, [ipfsHash, mint]);
+
     //useEffect to track status of tx
    useEffect(() => {
         console.log('tx status: ', status);
         console.log('tx hash: ', txHash);
-    }, [status, txHash]);
+        if (status === 'success') {
+            setSuccessView(true)
+            setVerseUsername(usernameInput)
+        };
+        if (txHash.length) setTxHash(txHash);
+    }, [status, txHash, usernameInput]);
 
 
     return (
         <Container>
             <Nav/>
             <StyledContentBlock>
-                <Header
-                    indentifier={!verseUsername || verseUsername === 'self' ? address: verseUsername}
-                />
-                <NameInput
-                    input={usernameInput}
-                    setInput={setUsernameInput}
-                    available={availability}
-                    checkAvailability={checkAvailability}
-                    valid={validName}
-                />
-                <DurationSelect
-                    selected={duration}
-                    setSelected={setDuration}
-                />
-                <MintButton
-                    label="Mint Username!"
-                    createMetadata={createMetadata}
-                    mint={mint}
-                    refetch={refetchPrep}
-                    disabled={availability !== true}
-                />
+                {!(successView) &&
+                    <>
+                        <Header
+                            indentifier={!verseUsername || verseUsername === 'self' ? address: `${verseUsername}@verse`}
+                        />
+                        <NameInput
+                            input={usernameInput}
+                            setInput={setUsernameInput}
+                            available={availability}
+                            checkAvailability={checkAvailability}
+                            valid={validName}
+                        />
+                        <DurationSelect
+                            selected={duration}
+                            setSelected={setDuration}
+                        />
+                        <MintButton
+                            label="Mint Username!"
+                            createMetadata={createMetadata}
+                            status={status}
+                            disabled={availability !== true}
+                        />
+                        </>
+                }
+                {successView &&
+                    <>
+                        <Header
+                            indentifier={`${verseUsername}@verse`}
+                            success={status === "success"}
+                            txHash={txHash}
+                        />
+                        <ButtonContainer>
+                            <Button
+                                onClick={() => {
+                                    setSuccessView(false);
+                                }}
+                                design='secondary'
+                            >
+                                Finish
+                            </Button>
+                        </ButtonContainer>
+                    </>
+                }                   
             </StyledContentBlock>
         </Container>
     );

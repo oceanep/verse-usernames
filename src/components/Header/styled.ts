@@ -21,3 +21,9 @@ export const Title = styled.div`
     font-weight: 600;
     color: ${colors.offWhite};
 `;
+
+export const SuccessText = styled(Title)`
+    line-break: anywhere;
+    text-align: center;
+    padding: 20px 0px; 
+`;

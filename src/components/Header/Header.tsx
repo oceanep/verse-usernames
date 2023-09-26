@@ -3,25 +3,40 @@ import React, { FC } from 'react';
 import {
     HeaderContainer,
     H2,
-    Title
+    Title,
+    SuccessText
 } from './styled'
 
 interface HeaderProps {
   indentifier?: string;  
+  success?: boolean;
+  txHash?: string;
 }
 
 const Header:FC<HeaderProps> = ({
-    indentifier = 'user'
+    indentifier = 'user',
+    success,
+    txHash
 }) => {
     
     return (
         <HeaderContainer>
             <H2>
-                @Verse Usernames
+                {!success 
+                    ? '@Verse Usernames' 
+                    : 'Congratulations on Minting!'
+                }
             </H2>
-            <Title>
-                {`Welcome, ${indentifier}`}
+            <Title
+            >
+                {!success
+                    ? `Welcome, ${indentifier}`
+                    : `Your @verse username is ${indentifier}`
+                }
             </Title>
+            {txHash?.length 
+                && <SuccessText>Your transaction hash is <b>{txHash}</b></SuccessText>
+            }
         </HeaderContainer>
     )
 }

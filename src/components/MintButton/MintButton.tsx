@@ -5,27 +5,25 @@ import Button from '../Button';
 import {
     ButtonContainer
 } from './styled';
+import Loader from '../Loader';
 
 interface MintButtonProps {
     label: string;
-    createMetadata: () => Promise<string> | undefined;
-    mint: () => void;
-    refetch: () => void;
+    createMetadata: () => void;
+    status?: string;
     disabled?: boolean;
 }
 
 const MintButton:FC<MintButtonProps> = ({
     label,
     createMetadata,
-    mint,
-    refetch,
+    status,
     disabled = false
 }) => {
 
     const mintUsername = useCallback(async () => {
         await createMetadata();
-        await mint();
-    }, [createMetadata, mint]);
+    }, [createMetadata]);
 
     return (
         <ButtonContainer>
@@ -35,7 +33,9 @@ const MintButton:FC<MintButtonProps> = ({
                 disabled={disabled}
                 onClick={mintUsername}
             >
-                {label}
+                {status === "loading" && <Loader/>}
+                {status === "error" && 'Mint Failed'}
+                {(status !== "loading" && status !== "error") && label}
             </Button>
         </ButtonContainer>        
     );
