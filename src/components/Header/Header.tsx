@@ -2,7 +2,8 @@ import React, { FC } from 'react';
 
 import {
     HeaderContainer,
-    H2
+    H2,
+    Title
 } from './styled'
 
 interface HeaderProps {
@@ -10,6 +11,7 @@ interface HeaderProps {
 }
 
 const Header:FC<HeaderProps> = ({
+    indentifier = 'user'
 }) => {
     
     return (
@@ -17,9 +19,9 @@ const Header:FC<HeaderProps> = ({
             <H2>
                 @Verse Usernames
             </H2>
-            <p>
-                Unlock your digital identity and seize your unique @verse username here. Just choose an username, select a term and hit that “Mint Username” button.
-            </p>
+            <Title>
+                {`Welcome, ${indentifier}`}
+            </Title>
         </HeaderContainer>
     )
 }
