@@ -58,3 +58,10 @@ export const StyledContentBlock = styled.div`
         }
     `}
 `;
+
+export const ButtonContainer = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
