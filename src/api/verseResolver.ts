@@ -11,9 +11,9 @@ export const usernameAvailable = async (chain:string, username:string) => {
     }
 };
 
-export const getUsername = async (chain:string, address:string) => {
+export const getVerseUsername = async (chain:string, address:string) => {
     try {
-      const response = await axios.get(`${resolverEndpoint}/username/${chain}/${address}`);
+      const response = await axios.get(`${resolverEndpoint}/address/${chain}/${address}`);
       return response;
     } catch(e) {
         console.log('There was an error: ', e);

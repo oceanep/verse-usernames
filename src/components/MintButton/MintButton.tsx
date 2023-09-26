@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import Button from '../Button';
 
@@ -8,23 +8,31 @@ import {
 
 interface MintButtonProps {
     label: string;
-    createMetadata: () => void;
+    createMetadata: () => Promise<string> | undefined;
+    mint: () => void;
     disabled?: boolean;
 }
 
 const MintButton:FC<MintButtonProps> = ({
     label,
     createMetadata,
+    mint,
     disabled = false
 }) => {
+
+    const mintUsername = useCallback(async () => {
+        const metadata = await createMetadata();
+        mint();
+    }, [createMetadata, mint]);
+
     return (
         <ButtonContainer>
             <Button
                 fullWidth
                 design='primary'
-                onClick={() => createMetadata()}
                 disabled={disabled}
-            >   
+                onClick={mintUsername}
+            >
                 {label}
             </Button>
         </ButtonContainer>        

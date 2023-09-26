@@ -14,13 +14,14 @@ import NameInput from '../NameInput/NameInput';
 import DurationSelect from '../DurationSelect/DurationSelect';
 import MintButton from '../MintButton/MintButton';
 import { validateUsername } from '../../utils/utils';
-import { getUsername, uploadMetadata, usernameAvailable } from '../../api/verseResolver';
+import { getVerseUsername, uploadMetadata, usernameAvailable } from '../../api/verseResolver';
 import { verseUsernameARConfig } from '../../api/contract';
 
 const Layout = () => {
     const [usernameInput, setUsernameInput] = useState<string>('');
     const [verseUsername, setVerseUsername] = useState<string>('');
     const [ipfsHash, setipfsHash] = useState<string>('');
+    const [txHash, setTxHash] = useState<string>('');
     const [availability, setAvailability] = useState<boolean | null>(null);
     const [duration, setDuration] = useState<number>(0);
 
@@ -30,7 +31,6 @@ const Layout = () => {
 
     const preConfig = useMemo(() => verseUsernameARConfig(usernameInput, address || '', ipfsHash), [usernameInput, address, ipfsHash]);
 
-    console.log('preConfig: ', preConfig)
     const { config } = usePrepareContractWrite(preConfig);
     const { error: wcError, status, writeAsync } = useContractWrite(config);
 
@@ -40,7 +40,7 @@ const Layout = () => {
         const checkForUsername = async () => {
             try {
                 if (!address) return;
-                const res = await getUsername(chainId, address);
+                const res = await getVerseUsername(chainId, address);
 
                 setVerseUsername(res?.data || '');
             } catch(e) {
@@ -48,7 +48,7 @@ const Layout = () => {
             };
         };
 
-        checkForUsername();
+        if (address && chainId) checkForUsername();
     }, [address, chainId]);
 
     useEffect(() => {
@@ -72,10 +72,12 @@ const Layout = () => {
             console.log("hello");
             if (!availability || !usernameInput || !address) return;
             const res = await uploadMetadata(chainId, usernameInput, address);
-            if (!res?.data.length) return;
-            setipfsHash( res.data);
-            console.log(res?.data);
-            mint();
+
+            if (res?.data.length) {
+                setipfsHash(res.data);
+                console.log('ifps hash: ', res.data)
+                return res.data;
+            }
         } catch(e) {
             console.log('error in layout: ', e)
         }
@@ -84,11 +86,17 @@ const Layout = () => {
     const mint = useCallback(async () => {
         if (!usernameInput || !address || !ipfsHash || availability !== true) return;
         if (wcError || !writeAsync ) return;
-        const txHash = await writeAsync?.();
+        const res = await writeAsync?.();
+
+        setTxHash(res?.hash || '')
 
     }, [usernameInput, address, ipfsHash, availability, writeAsync, wcError]);
 
     //useEffect to track status of tx
+   useEffect(() => {
+        console.log('tx status: ', status);
+        console.log('tx hash: ', txHash);
+    }, [status, txHash]);
 
 
     return (
@@ -112,7 +120,8 @@ const Layout = () => {
                 <MintButton
                     label="Mint Username!"
                     createMetadata={createMetadata}
-                    disabled={availability !== true}
+                    mint={mint}
+                    disabled={availability !== true || !writeAsync}
                 />
             </StyledContentBlock>
         </Container>
