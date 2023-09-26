@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
-import { polygon, polygonMumbai } from 'wagmi/chains'
+import { polygon } from 'wagmi/chains'
 
 import Nav from '../Nav/Nav';
 import Header from '../Header/Header';
@@ -31,7 +31,7 @@ const Layout = () => {
 
     const preConfig = useMemo(() => verseUsernameARConfig(usernameInput, address || '', ipfsHash), [usernameInput, address, ipfsHash]);
 
-    const { config } = usePrepareContractWrite(preConfig);
+    const { config, refetch: refetchPrep } = usePrepareContractWrite({...preConfig});
     const { error: wcError, status, writeAsync } = useContractWrite(config);
 
     const validName = useMemo(() => usernameInput.length ? validateUsername(usernameInput) : true, [usernameInput]);
@@ -69,13 +69,12 @@ const Layout = () => {
 
     const createMetadata = useCallback(async () => {
         try {
-            console.log("hello");
             if (!availability || !usernameInput || !address) return;
             const res = await uploadMetadata(chainId, usernameInput, address);
 
             if (res?.data.length) {
                 setipfsHash(res.data);
-                console.log('ifps hash: ', res.data)
+                console.log('ipfs hash: ', res.data)
                 return res.data;
             }
         } catch(e) {
@@ -86,11 +85,14 @@ const Layout = () => {
     const mint = useCallback(async () => {
         if (!usernameInput || !address || !ipfsHash || availability !== true) return;
         if (wcError || !writeAsync ) return;
-        const res = await writeAsync?.();
-
-        setTxHash(res?.hash || '')
-
-    }, [usernameInput, address, ipfsHash, availability, writeAsync, wcError]);
+        try {
+            const res = await writeAsync?.();
+            setTxHash(res?.hash || '');
+        } catch(e) {
+            console.log('transaction error: ', e)
+            await refetchPrep?.()
+        }
+    }, [usernameInput, address, ipfsHash, availability, writeAsync, refetchPrep, wcError]);
 
     //useEffect to track status of tx
    useEffect(() => {
@@ -104,7 +106,7 @@ const Layout = () => {
             <Nav/>
             <StyledContentBlock>
                 <Header
-                    indentifier={verseUsername || address}
+                    indentifier={!verseUsername || verseUsername === 'self' ? address: verseUsername}
                 />
                 <NameInput
                     input={usernameInput}
@@ -121,7 +123,8 @@ const Layout = () => {
                     label="Mint Username!"
                     createMetadata={createMetadata}
                     mint={mint}
-                    disabled={availability !== true || !writeAsync}
+                    refetch={refetchPrep}
+                    disabled={availability !== true}
                 />
             </StyledContentBlock>
         </Container>

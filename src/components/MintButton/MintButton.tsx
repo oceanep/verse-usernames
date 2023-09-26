@@ -10,6 +10,7 @@ interface MintButtonProps {
     label: string;
     createMetadata: () => Promise<string> | undefined;
     mint: () => void;
+    refetch: () => void;
     disabled?: boolean;
 }
 
@@ -17,12 +18,13 @@ const MintButton:FC<MintButtonProps> = ({
     label,
     createMetadata,
     mint,
+    refetch,
     disabled = false
 }) => {
 
     const mintUsername = useCallback(async () => {
-        const metadata = await createMetadata();
-        mint();
+        await createMetadata();
+        await mint();
     }, [createMetadata, mint]);
 
     return (
